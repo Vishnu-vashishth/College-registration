@@ -1,10 +1,10 @@
 const express = require('express');
-const {getSignIpPage,getSignUpPage,postSignIn}  = require('../Controllers/authController')
+const {getSignIpPage,getSignUpPage,postSignIn,postSignUp}  = require('../Controllers/authController')
 const authRouter = express.Router();
 
 authRouter.route('/signup')
 .get(getSignUpPage)
-.post();
+.post(postSignUp);
 
 
 authRouter.route('/signin')

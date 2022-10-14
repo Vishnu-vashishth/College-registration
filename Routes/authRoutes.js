@@ -1,9 +1,10 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
-const {getSignIpPage,getSignUpPage,postSignIn,postSignUp}  = require('../Controllers/authController')
+const {getSignIpPage,getSignUpPage,postSignIn,postSignUp,protectedRoute}  = require('../Controllers/authController')
 const authRouter = express.Router();
 
 authRouter.route('/signup')
-.get(getSignUpPage)
+.get(protectedRoute,getSignUpPage)
 .post(postSignUp);
 
 

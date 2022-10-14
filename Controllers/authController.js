@@ -1,14 +1,44 @@
+
 const path = require('path');
+
 const userModel = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const signInfilepath = path.join(__dirname, '..', '/Public/auth/signin.html');
 const signUpfilepath = path.join(__dirname, '..', '/Public/auth/signup.html');
+const JWT_KEY = "mysecretKey";
 
-function getSignUpPage(req, res) {
-       res.sendFile(signUpfilepath);
+
+function protectedRoute(req,res,next){
+       
+      let token = req.cookies;
+      console.log(token);
+      if(token){
+     jwt.verify(token.login,JWT_KEY,function(err,verified){
+       if(verified){
+              next();
+       }
+       else{
+            return  res.redirect('/api/auth/signin');
+       }
+     });
+}
+else{
+       return  res.redirect('/api/auth/signin');
 
 }
+
+}
+
+//*---------send sign up page------------
+function getSignUpPage(req, res) {
+       res.sendFile(signUpfilepath);
+       
+}
+
+//*---------send sign in page------------
 function getSignIpPage(req, res) {
        res.sendFile(signInfilepath);
 }
@@ -63,11 +93,14 @@ async function postSignIn(req, res) {
        let {email,password} = req.body;
        const userData = await userModel.findOne({email:email});
        if(userData){
-              console.log(password,userData);
+              
                bcrypt.compare(password,userData.password).then(function(allOkay){
                      if(allOkay)
                    {
-                     res.cookie('login','true');
+                     let uid = userData['_id'];
+                     let jwt_token  = jwt.sign({payload:uid},JWT_KEY); 
+                     console.log();
+                     res.cookie('login',jwt_token, { maxAge: 900000, httpOnly: true });
                      return res.status(200).json({message:"login succesfull"})
                    }
                    else{
@@ -89,4 +122,4 @@ async function postSignIn(req, res) {
 
 
 
-module.exports = { getSignIpPage, getSignUpPage, postSignIn ,postSignUp};
+module.exports = { getSignIpPage, getSignUpPage, postSignIn ,postSignUp,protectedRoute};

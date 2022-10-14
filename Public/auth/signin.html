@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     
 </head>
 <body>
@@ -102,11 +102,12 @@ function showPassword() {
 }
 let btn = document.getElementById("submit_btn");
 console.log(btn)
-btn.addEventListener("click",(e)=>{
+btn.addEventListener("click",async (e)=>{
     e.preventDefault;
     let email = document.getElementById('email').value;
     let password = document.getElementById('myInput').value;
-    axios.post('/api/auth/singin',{email,password});
+    console.log(email,password);
+    await  axios.post('/api/auth/singin',{email,password}).then(console.log);
 })
 
 </script>

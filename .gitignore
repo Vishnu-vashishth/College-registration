@@ -1,6 +1,4 @@
 
-//git ignore node modules
 node_modules
-
-//git ignore .env
 .env
+
